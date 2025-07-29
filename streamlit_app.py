@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 from datetime import datetime, timedelta
 
 # Period durations
@@ -23,7 +22,11 @@ st.title("📟 14-Day Device Alert Time Viewer")
 st.markdown("Input the **device configuration time** and **period (1-5)** to view alert blink schedule.")
 
 selected_period = st.selectbox("Select a Monitoring Period", list(period_durations.keys()))
-config_time = st.datetime_input("📅 Device Configuration Time", datetime.now())
+
+# Combine date and time inputs
+date_input = st.date_input("📅 Select Configuration Date", datetime.now().date())
+time_input = st.time_input("🕒 Select Configuration Time", datetime.now().time())
+config_time = datetime.combine(date_input, time_input)
 
 if st.button("🔔 Show Alert Times"):
     period_duration = period_durations[selected_period]
@@ -43,5 +46,3 @@ if st.button("🔔 Show Alert Times"):
     st.warning(f"🟡 Yellow Alert 2 (2 flashes at -1h29m): {yellow2_time.strftime('%Y-%m-%d %H:%M:%S')}")
     st.success(f"🟢 Green Alert (2 flashes at due time): {green_time.strftime('%Y-%m-%d %H:%M:%S')}")
     st.error(f"🔴 Red Alert (1 flash after due time): {red_time.strftime('%Y-%m-%d %H:%M:%S')}")
-
-
