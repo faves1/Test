@@ -23,26 +23,31 @@ st.markdown("Input the **device configuration time** and **period (1-5)** to vie
 
 selected_period = st.selectbox("Select a Monitoring Period", list(period_durations.keys()))
 
-# Combine date and time inputs
-date_input = st.date_input("📅 Select Configuration Date", datetime.now().date())
-time_input = st.time_input("🕒 Select Configuration Time", datetime.now().time())
-config_time = datetime.combine(date_input, time_input)
+manual_input = st.text_input(
+    "📝 Enter Configuration Time (Format: YYYY-MM-DD HH:MM)",
+    value=datetime.now().strftime('%Y-%m-%d %H:%M')
+)
 
-if st.button("🔔 Show Alert Times"):
-    period_duration = period_durations[selected_period]
-    due_time = config_time + period_duration
+try:
+    config_time = datetime.strptime(manual_input, "%Y-%m-%d %H:%M")
 
-    # Alert timestamps
-    yellow1_time = due_time - yellow1_offset
-    yellow2_time = due_time - yellow2_offset
-    green_time = due_time
-    red_time = due_time + red_offset
+    if st.button("🔔 Show Alert Times"):
+        period_duration = period_durations[selected_period]
+        due_time = config_time + period_duration
 
-    # Display Results
-    st.markdown("### 🕒 Alert Schedule")
-    st.info(f"**Due Time:** {due_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        # Alert timestamps
+        yellow1_time = due_time - yellow1_offset
+        yellow2_time = due_time - yellow2_offset
+        green_time = due_time
+        red_time = due_time + red_offset
 
-    st.warning(f"🟡 Yellow Alert 1 (1 flash at -4h29m): {yellow1_time.strftime('%Y-%m-%d %H:%M:%S')}")
-    st.warning(f"🟡 Yellow Alert 2 (2 flashes at -1h29m): {yellow2_time.strftime('%Y-%m-%d %H:%M:%S')}")
-    st.success(f"🟢 Green Alert (2 flashes at due time): {green_time.strftime('%Y-%m-%d %H:%M:%S')}")
-    st.error(f"🔴 Red Alert (1 flash after due time): {red_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        # Display Results
+        st.markdown("### 🕒 Alert Schedule")
+        st.info(f"**Due Time:** {due_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+        st.warning(f"🟡 Yellow Alert 1 (1 flash at -4h29m): {yellow1_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        st.warning(f"🟡 Yellow Alert 2 (2 flashes at -1h29m): {yellow2_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        st.success(f"🟢 Green Alert (2 flashes at due time): {green_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        st.error(f"🔴 Red Alert (1 flash after due time): {red_time.strftime('%Y-%m-%d %H:%M:%S')}")
+except ValueError:
+    st.error("❌ Please enter a valid datetime in format: YYYY-MM-DD HH:MM")
