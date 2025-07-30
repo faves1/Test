@@ -8,6 +8,7 @@ period_durations = {
     "Period 1": timedelta(days=1, hours=7, minutes=22),
     "Period 2": timedelta(hours=20, minutes=54),
     "Period 3": timedelta(hours=20, minutes=54),
+    "Period 4": timedelta(days=4, hours=18, minutes=59),
     "Period 5": timedelta(days=5, hours=5, minutes=24),
 }
 
